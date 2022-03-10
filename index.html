@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ultirequiem.com</title>
+
+<script type="module" defer>
+const seconds = document.getElementById("seconds")
+
+let counter=5;
+
+setInterval(()=>{
+    seconds.innerText = counter
+    
+    if (--counter === 0) {
+      window.location.assign('https://ultirequiem.com/')
+    }
+
+}, 5000)
+
+</script>
+
+</head>
+
+<body>
+Redirecting you in <span id="seconds"> 5 </span>
+</body>
+
+</html>
