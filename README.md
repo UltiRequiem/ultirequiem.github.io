@@ -4,6 +4,8 @@
 
 Is only an *HTML* file 😎
 
+Made with https://github.com/UltiRequiem/redirector
+
 ## License
 
 The Unlicensed
