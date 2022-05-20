@@ -26,7 +26,7 @@ const coolPokemon = randomPokemon();
 
 const pokePalindromeResponse = await fetch(
   // API made by me too!
-  `https://palindrome.deno.dev/${coolPokemon}`
+  `https://palindrome.deno.dev/${coolPokemon}`,
 );
 
 const pokePalindrome = await pokePalindromeResponse.json();
@@ -38,5 +38,5 @@ const favoritesPokemon = Array.from({ length: randomNumber() }, randomPokemon);
 const favoritePokemon = randomItem(favoritesPokemon);
 
 console.log(
-  `I have ${favoritesPokemon.length} favorites Pokemon, but the most special one for me  is ${favoritePokemon}.`
+  `I have ${favoritesPokemon.length} favorites Pokemon, but the most special one for me  is ${favoritePokemon}.`,
 );
