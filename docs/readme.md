@@ -7,9 +7,12 @@ Source.
 
 ### Fibonacci
 
-> https://ulti.js.org/fibonacci
+> [Site](https://ulti.js.org/fibonacci) -
+> [Repository](https://github.com/ultirequiem/fibonacci)
 
-[Repository](https://github.com/ultirequiem/fibonacci)
+Compute the
+[Fibonacci Succession](https://en.wikipedia.org/wiki/Fibonacci_number) and NTH
+Fibonacci Number.
 
 ```javascript
 import {
