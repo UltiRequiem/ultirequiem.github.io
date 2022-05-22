@@ -5,7 +5,52 @@ Hi everyone 👋
 I'm Eliaz, a 15-year-old Peruvian Software Developer who loves creating Open
 Source.
 
-### Last Item
+## Camel Case
+
+> [Site](https://camelcase.js.org) -
+> [Repository](https://github.com/UltiRequiem/camelcase)
+
+[![Code Coverage](https://codecov.io/gh/ultirequiem/camelcase/branch/main/graph/badge.svg)](https://codecov.io/gh/ultirequiem/camelcase)
+[![Deno Doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/camelcase/mod.ts)
+
+Convert a dash/dot/underscore/space separated string to
+[**camelCase**](https://wikipedia.org/wiki/Camel_case) or
+[**PascalCase**](https://wiktionary.org/wiki/Pascal_case).
+
+```javascript
+import { camelcase } from "https://deno.land/x/camelcase/mod.ts";
+
+camelCase("foo-bar"); //=> 'fooBar'
+
+camelCase("foo_bar"); //=> 'fooBar'
+
+camelCase("Foo-Bar"); //=> 'fooBar'
+
+camelCase("розовый_пушистый_единорог"); //=> 'розовыйПушистыйЕдинорог'
+
+camelCase("Foo-Bar", { pascalCase: true }); //=> 'FooBar'
+
+camelCase("--foo.bar", { pascalCase: false }); //=> 'fooBar'
+
+camelCase("Foo-BAR", { preserveConsecutiveUppercase: true }); //=> 'fooBAR'
+
+camelCase("fooBAR", { pascalCase: true, preserveConsecutiveUppercase: true }); //=> 'FooBAR'
+
+camelCase("foo bar"); //=> 'fooBar'
+
+camelCase(["foo", "bar"]); //=> 'fooBar'
+
+camelCase(["__foo__", "--bar"], { pascalCase: true }); //=> 'FooBar'
+
+camelCase(["foo", "BAR"], {
+  pascalCase: true,
+  preserveConsecutiveUppercase: true,
+}); //=> 'FooBAR'
+
+camelCase("lorem-ipsum", { locale: "en-US" }); //=> 'loremIpsum'
+```
+
+## Last Item
 
 [![Code Coverage](https://codecov.io/gh/ultirequiem/last_item/branch/main/graph/badge.svg)](https://codecov.io/gh/ultirequiem/last_item)
 [![Deno Doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/last_item/mod.ts)
@@ -14,7 +59,7 @@ Source.
 > [Repository](https://github.com/ultirequiem/last_item)
 
 Get the last item of an array, faster than
-[Array.slice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice).
+[`Array.prototype.slice`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)/[`Array.project.at`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/at).
 
 ```javascript
 import { lastItem } from "https://deno.land/x/last_item/mod.ts";
@@ -26,7 +71,7 @@ lastItem(numbers); //=> 5
 lastItem(numbers, 3); //=> [3, 4 , 5]
 ```
 
-### Fibonacci
+## Fibonacci
 
 [![Code Coverage](https://codecov.io/gh/ultirequiem/fibonacci/branch/main/graph/badge.svg)](https://codecov.io/gh/ultirequiem/fibonacci)
 [![Deno Docs](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/fibonacci/mod.ts)
