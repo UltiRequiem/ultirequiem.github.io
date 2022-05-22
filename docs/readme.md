@@ -5,6 +5,24 @@ Hi everyone 👋
 I'm Eliaz, a 15-year-old Peruvian Software Developer who loves creating Open
 Source.
 
+### Last Item
+
+> [Site](https://ulti.js.org/last_item) -
+> [Repository](https://github.com/ultirequiem/last_item)
+
+Get the last item of an array, faster than
+[Array.slice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice).
+
+```javascript
+import { lastItem } from "https://deno.land/x/last_item/mod.ts";
+
+const numbers = [1, 2, 3, 4, 5];
+
+lastItem(numbers); //=> 5
+
+lastItem(numbers, 3); //=> [3, 4 , 5]
+```
+
 ### Fibonacci
 
 > [Site](https://ulti.js.org/fibonacci) -
