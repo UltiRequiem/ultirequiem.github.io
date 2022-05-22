@@ -5,9 +5,27 @@ Hi everyone 👋
 I'm Eliaz, a 15-year-old Peruvian Software Developer who loves creating Open
 Source.
 
+## Add Query Params
+
+> [Site](https://ulti.js.org/add_params) -
+> [Repository](https://github.com/UltiRequiem/add_params)
+
+[![Code Coverage](https://codecov.io/gh/UltiRequiem/add_params/branch/main/graph/badge.svg)](https://codecov.io/gh/UltiRequiem/add_params)
+[![Deno Doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/add_params/mod.ts)
+
+Add [Query Parameters](https://wikipedia.org/wiki/Query_string) to an URL.
+
+```javascript
+import { addParams } from "https://deno.land/x/add_params/mod.ts";
+
+addParams("https://ultirequiem.com", { page: 33, author: "Me", share: false });
+//=> https://ultirequiem.com/?page=33&author=Me&share=false
+```
+
 ## Drive Link
 
-> [Site](https://ulti.js.org/drive_link) - [Repository](https://github.com/UltiRequiem/drive_link)
+> [Site](https://ulti.js.org/drive_link) -
+> [Repository](https://github.com/UltiRequiem/drive_link)
 
 [![Code Coverage](https://codecov.io/gh/UltiRequiem/drive_link/branch/main/graph/badge.svg)](https://codecov.io/gh/UltiRequiem/drive_link)
 [![Deno Doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/drive_link/mod.ts)
