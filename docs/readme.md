@@ -5,6 +5,23 @@ Hi everyone 👋
 I'm Eliaz, a 15-year-old Peruvian Software Developer who loves creating Open
 Source.
 
+## Drive Link
+
+[![Code Coverage](https://codecov.io/gh/UltiRequiem/drive_link/branch/main/graph/badge.svg)](https://codecov.io/gh/UltiRequiem/drive_link)
+[![Deno Doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/drive_link/mod.ts)
+
+Generate a [Google Drive](https://google.com/drive) direct download link based
+on the URL or ID.
+
+```javascript
+import { driveLink } from "https://deno.land/x/drive_link/mod.ts";
+
+driveLink(
+  "https://drive.google.com/file/d/1DvRH-yk1z0HVBK-EmiQeJ_VVh5eHwQXh/view?usp=sharing",
+);
+//=> "https://drive.google.com/uc?export=download&id=1DvRH-yk1z0HVBK-EmiQeJ_VVh5eHwQXh"
+```
+
 ## Camel Case
 
 > [Site](https://camelcase.js.org) -
