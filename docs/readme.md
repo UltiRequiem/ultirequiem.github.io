@@ -7,6 +7,9 @@ Source.
 
 ### Last Item
 
+[![Code Coverage](https://codecov.io/gh/ultirequiem/last_item/branch/main/graph/badge.svg)](https://codecov.io/gh/ultirequiem/last_item)
+[![Deno Doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/last_item/mod.ts)
+
 > [Site](https://ulti.js.org/last_item) -
 > [Repository](https://github.com/ultirequiem/last_item)
 
@@ -24,6 +27,9 @@ lastItem(numbers, 3); //=> [3, 4 , 5]
 ```
 
 ### Fibonacci
+
+[![Code Coverage](https://codecov.io/gh/ultirequiem/fibonacci/branch/main/graph/badge.svg)](https://codecov.io/gh/ultirequiem/fibonacci)
+[![Deno Docs](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/fibonacci/mod.ts)
 
 > [Site](https://ulti.js.org/fibonacci) -
 > [Repository](https://github.com/ultirequiem/fibonacci)
