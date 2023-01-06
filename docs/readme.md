@@ -2,7 +2,7 @@
 
 Hi everyone 👋
 
-I'm Eliaz, a 15-year-old Peruvian Software Developer who loves creating Open
+I'm Eliaz, a Peruvian Software Developer who loves creating Open
 Source.
 
 ## Add Query Params
