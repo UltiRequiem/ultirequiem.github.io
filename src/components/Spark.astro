@@ -1,0 +1,38 @@
+---
+// Tiny SVG area chart from a list of numbers; no JS, colours come from CSS variables.
+interface Props {
+  values: number[];
+  width?: number;
+  height?: number;
+  label?: string;
+  strokeWidth?: number;
+}
+
+const { values, width = 120, height = 32, label = "Downloads over the last 30 days", strokeWidth = 1.6 } = Astro.props;
+const pad = strokeWidth + 1;
+const max = Math.max(...values, 1);
+const step = values.length > 1 ? (width - pad * 2) / (values.length - 1) : 0;
+const points = values.map((v, i) => [pad + i * step, height - pad - (v / max) * (height - pad * 2)] as const);
+const line = points.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
+const area = points.length ? `${line} L${points.at(-1)![0].toFixed(1)} ${height} L${points[0][0].toFixed(1)} ${height} Z` : "";
+const id = `g${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<svg class="spark" viewBox={`0 0 ${width} ${height}`} width={width} height={height} role="img" aria-label={label} preserveAspectRatio="none">
+  <defs>
+    <linearGradient id={id} x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="var(--spark)" stop-opacity="0.35"></stop>
+      <stop offset="1" stop-color="var(--spark)" stop-opacity="0"></stop>
+    </linearGradient>
+  </defs>
+  {
+    values.length > 1 && max > 1 ? (
+      <>
+        <path d={area} fill={`url(#${id})`} />
+        <path d={line} fill="none" stroke="var(--spark)" stroke-width={strokeWidth} stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+      </>
+    ) : (
+      <line x1={pad} x2={width - pad} y1={height - pad} y2={height - pad} stroke="var(--border)" stroke-width="1.5" stroke-dasharray="3 4" />
+    )
+  }
+</svg>
