@@ -1,0 +1,22 @@
+{
+  "name": "ultirequiem.github.io",
+  "version": "0.0.0-development",
+  "private": true,
+  "type": "module",
+  "description": "Eliaz Bobadilla's libraries and apps, rebuilt daily from GitHub and npm.",
+  "scripts": {
+    "catalog": "node scripts/build-catalog.mjs",
+    "dev": "pnpm catalog && astro dev",
+    "build": "pnpm catalog && astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "packageManager": "pnpm@12.6.0",
+  "dependencies": {
+    "astro": "^7.4.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,138 @@
+---
+import Base from "../layouts/Base.astro";
+import Card from "../components/Card.astro";
+import catalog from "../data/catalog.json";
+
+const { owner, totals, libraries, plugins, apps } = catalog;
+const number = new Intl.NumberFormat("en");
+const updated = new Date(catalog.generatedAt).toLocaleDateString("en", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
+
+// the three most installed libraries get the spotlight, everything else keeps the score order
+const featured = libraries.slice(0, 3);
+const rest = libraries.slice(3);
+const name = owner.name ?? owner.login;
+---
+
+<Base title={`${name} · libraries and apps`} description={`${totals.packages} npm packages and apps by ${name}, ranked by what people actually install. Rebuilt daily from GitHub and npm.`}>
+  <div class="wrap">
+    <header class="top">
+      <a class="brand" href="/">{owner.login}</a>
+      <nav class="links" aria-label="Profiles">
+        <a href={`https://github.com/${owner.login}`}>GitHub</a>
+        <a href={`https://www.npmjs.com/~${owner.login.toLowerCase()}`}>npm</a>
+        {owner.blog && <a href={owner.blog.startsWith("http") ? owner.blog : `https://${owner.blog}`}>Blog</a>}
+      </nav>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">{owner.bio}</p>
+      <h1>{name}</h1>
+      <p>
+        Small, typed, ESM-only libraries, editor plugins and a few apps, built in {owner.location}. Ranked by what
+        people actually install.
+      </p>
+      <div class="stats">
+        <div class="stat"><b>{totals.packages}</b><span>npm packages</span></div>
+        <div class="stat"><b>{number.format(totals.downloads)}</b><span>downloads / month</span></div>
+        <div class="stat"><b>{number.format(totals.stars)}</b><span>GitHub stars</span></div>
+        <div class="stat"><b>{apps.length}</b><span>apps</span></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="controls">
+    <div class="wrap">
+      <input class="search" id="search" type="search" placeholder="Search by name, description or language…" aria-label="Search" />
+      <div class="chips" role="group" aria-label="Filter by type">
+        <button class="chip" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="chip" type="button" data-filter="library" aria-pressed="false">Libraries</button>
+        <button class="chip" type="button" data-filter="plugin" aria-pressed="false">Editor plugins</button>
+        <button class="chip" type="button" data-filter="app" aria-pressed="false">Apps</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <section data-section="library">
+      <h2>Libraries</h2>
+      <p>Install with any package manager; the same ESM import works in Node.js, Bun and browsers.</p>
+      <div class="grid featured">
+        {featured.map((item) => <Card item={item} />)}
+      </div>
+      <div class="grid" style="margin-top: 14px">
+        {rest.map((item) => <Card item={item} />)}
+      </div>
+    </section>
+
+    {
+      plugins.length > 0 && (
+        <section data-section="plugin">
+          <h2>Editor plugins</h2>
+          <p>Extensions for coc.nvim.</p>
+          <div class="grid">{plugins.map((item) => <Card item={item} showUsage={false} />)}</div>
+        </section>
+      )
+    }
+
+    {
+      apps.length > 0 && (
+        <section data-section="app">
+          <h2>Apps</h2>
+          <p>Things you can open and use.</p>
+          <div class="grid">{apps.map((item) => <Card item={item} showUsage={false} />)}</div>
+        </section>
+      )
+    }
+
+    <p class="empty" id="empty" hidden>Nothing matches that search.</p>
+  </main>
+
+  <footer class="wrap">
+    Rebuilt daily from GitHub and npm. Last update {updated}. Tag a repository with the
+    <code>showcase</code> topic and it shows up here.
+    <a href={`https://github.com/${owner.login}/${owner.login.toLowerCase()}.github.io`}>Source</a>.
+  </footer>
+
+  <script is:inline>
+    const search = document.getElementById("search");
+    const chips = [...document.querySelectorAll(".chip")];
+    const cards = [...document.querySelectorAll(".card")];
+    const sections = [...document.querySelectorAll("[data-section]")];
+    const empty = document.getElementById("empty");
+    let kind = "all";
+
+    function apply() {
+      const query = search.value.trim().toLowerCase();
+      let shown = 0;
+      for (const card of cards) {
+        const match = (kind === "all" || card.dataset.kind === kind) && (!query || card.dataset.text.includes(query));
+        card.hidden = !match;
+        if (match) shown++;
+      }
+      for (const section of sections) section.hidden = !section.querySelector(".card:not([hidden])");
+      empty.hidden = shown > 0;
+    }
+
+    search.addEventListener("input", apply);
+    for (const chip of chips) {
+      chip.addEventListener("click", () => {
+        kind = chip.dataset.filter;
+        for (const other of chips) other.setAttribute("aria-pressed", String(other === chip));
+        apply();
+      });
+    }
+
+    document.addEventListener("click", async (event) => {
+      const button = event.target.closest?.("[data-copy]");
+      if (!button) return;
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy);
+        const label = button.textContent;
+        button.textContent = "Copied";
+        setTimeout(() => (button.textContent = label), 1200);
+      } catch {
+        /* clipboard unavailable */
+      }
+    });
+  </script>
+</Base>
