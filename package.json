@@ -9,7 +9,7 @@
     "dev": "pnpm catalog && astro dev",
     "build": "pnpm catalog && astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "pnpm catalog && astro check"
   },
   "packageManager": "pnpm@12.6.0",
   "dependencies": {
