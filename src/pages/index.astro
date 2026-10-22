@@ -1,22 +1,35 @@
 ---
 import Base from "../layouts/Base.astro";
-import Card from "../components/Card.astro";
+import Spark from "../components/Spark.astro";
 import catalog from "../data/catalog.json";
 
-const { owner, totals, libraries, plugins, apps } = catalog;
+const { owner, totals, libraries, plugins } = catalog;
 const number = new Intl.NumberFormat("en");
+const compact = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
 const updated = new Date(catalog.generatedAt).toLocaleDateString("en", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
-
-// the three most installed libraries get the spotlight, everything else keeps the score order
-const featured = libraries.slice(0, 3);
-const rest = libraries.slice(3);
 const name = owner.name ?? owner.login;
+
+interface Listed {
+  name: string;
+  description: string;
+  language: string | null;
+  url: string;
+  npm: { name: string } | null;
+}
+
+const published = libraries.filter((item) => (item.npm?.downloads ?? 0) > 0);
+const board = published.slice(0, 8);
+const onBoard = new Set(board.map((item) => item.name));
+const others = libraries.filter((item) => !onBoard.has(item.name));
+const top = board[0]?.npm?.downloads ?? 1;
+const npmUrl = (item: Listed) => (item.npm ? `https://www.npmjs.com/package/${item.npm.name}` : item.url);
+const haystack = (item: Listed) => `${item.name} ${item.description} ${item.language ?? ""}`.toLowerCase();
 ---
 
-<Base title={`${name} · libraries and apps`} description={`${totals.packages} npm packages and apps by ${name}, ranked by what people actually install. Rebuilt daily from GitHub and npm.`}>
+<Base title={`${name} · open source JavaScript modules`} description={`${totals.packages} open source npm modules by ${name}, ${number.format(totals.downloads)} installs a month. Typed, ESM-only, rebuilt daily from GitHub and npm.`}>
   <div class="wrap">
     <header class="top">
-      <a class="brand" href="/">{owner.login}</a>
+      <a class="brand" href="/"><i></i>{owner.login}</a>
       <nav class="links" aria-label="Profiles">
         <a href={`https://github.com/${owner.login}`}>GitHub</a>
         <a href={`https://www.npmjs.com/~${owner.login.toLowerCase()}`}>npm</a>
@@ -25,61 +38,121 @@ const name = owner.name ?? owner.login;
     </header>
 
     <section class="hero">
-      <p class="eyebrow">{owner.bio}</p>
-      <h1>{name}</h1>
-      <p>
-        Small, typed, ESM-only libraries, editor plugins and a few apps, built in {owner.location}. Ranked by what
-        people actually install.
-      </p>
-      <div class="stats">
-        <div class="stat"><b>{totals.packages}</b><span>npm packages</span></div>
-        <div class="stat"><b>{number.format(totals.downloads)}</b><span>downloads / month</span></div>
-        <div class="stat"><b>{number.format(totals.stars)}</b><span>GitHub stars</span></div>
-        <div class="stat"><b>{apps.length}</b><span>apps</span></div>
+      <div>
+        <p class="eyebrow">{owner.bio}</p>
+        <h1>{name}</h1>
+        <p class="lede">Open source JavaScript modules: small, typed and ESM-only, with the same import in Node.js, Bun and browsers.</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-top">
+          <div class="big">
+            <span data-count={totals.downloads}>{number.format(totals.downloads)}</span>
+            <small>npm installs in the last 30 days</small>
+          </div>
+          <div class="facts">
+            <div class="fact"><b>{totals.packages}</b><span>packages</span></div>
+            <div class="fact"><b>{number.format(totals.stars)}</b><span>GitHub stars</span></div>
+            <div class="fact"><b>{number.format(owner.followers)}</b><span>followers</span></div>
+          </div>
+        </div>
+        <div class="chart"><Spark values={totals.dailyTotal} width={1000} height={130} strokeWidth={2.2} label="Combined daily npm downloads over the last 30 days" /></div>
+        <div class="axis"><span>30 days ago</span><span>today</span></div>
       </div>
     </section>
   </div>
 
   <div class="controls">
     <div class="wrap">
-      <input class="search" id="search" type="search" placeholder="Search by name, description or language…" aria-label="Search" />
+      <input class="search" id="search" type="search" placeholder="Search modules…" aria-label="Search modules" />
       <div class="chips" role="group" aria-label="Filter by type">
         <button class="chip" type="button" data-filter="all" aria-pressed="true">All</button>
         <button class="chip" type="button" data-filter="library" aria-pressed="false">Libraries</button>
         <button class="chip" type="button" data-filter="plugin" aria-pressed="false">Editor plugins</button>
-        <button class="chip" type="button" data-filter="app" aria-pressed="false">Apps</button>
       </div>
     </div>
   </div>
 
   <main class="wrap">
-    <section data-section="library">
-      <h2>Libraries</h2>
-      <p>Install with any package manager; the same ESM import works in Node.js, Bun and browsers.</p>
-      <div class="grid featured">
-        {featured.map((item) => <Card item={item} />)}
-      </div>
-      <div class="grid" style="margin-top: 14px">
-        {rest.map((item) => <Card item={item} />)}
-      </div>
-    </section>
-
     {
-      plugins.length > 0 && (
-        <section data-section="plugin">
-          <h2>Editor plugins</h2>
-          <p>Extensions for coc.nvim.</p>
-          <div class="grid">{plugins.map((item) => <Card item={item} showUsage={false} />)}</div>
+      board.length > 0 && (
+        <section data-section>
+          <div class="heading">
+            <h2>Most installed</h2>
+            <p>Ranked by npm downloads, last 30 days</p>
+          </div>
+          <ol class="board">
+            {board.map((item, index) => (
+              <li data-kind="library" data-text={haystack(item)}>
+                <a class="row" href={npmUrl(item)} style={`--share:${Math.max(6, Math.round(((item.npm?.downloads ?? 0) / top) * 100))}%`}>
+                  <span class="rank">{String(index + 1).padStart(2, "0")}</span>
+                  <span class="who">
+                    <b>{item.name}</b>
+                    <span>{item.description}</span>
+                  </span>
+                  <Spark values={item.npm?.daily ?? []} width={160} height={40} />
+                  <span class="num">
+                    <b>{compact.format(item.npm?.downloads ?? 0)}</b>
+                    <span>per month</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
         </section>
       )
     }
 
     {
-      apps.length > 0 && (
-        <section data-section="app">
-          <h2>Apps</h2>
-          <p>Things you can open and use.</p>
-          <div class="grid">{apps.map((item) => <Card item={item} showUsage={false} />)}</div>
+      others.length > 0 && (
+        <section data-section>
+          <div class="heading">
+            <h2>More libraries</h2>
+            <p>{others.length} small modules</p>
+          </div>
+          <div class="grid">
+            {others.map((item) => (
+              <a class="card" href={npmUrl(item)} data-kind="library" data-text={haystack(item)}>
+                <div class="head">
+                  <h3>{item.name}</h3>
+                  {item.npm?.version ? <span class="pill">v{item.npm.version}</span> : <span class="pill soon">coming to npm</span>}
+                </div>
+                {item.description && <p>{item.description}</p>}
+                <div class="foot">
+                  {item.npm && item.npm.downloads > 0 && <span><b>{compact.format(item.npm.downloads)}</b> / mo</span>}
+                  <span>★ {item.stars}</span>
+                  {item.npm && item.npm.daily.length > 1 && <Spark values={item.npm.daily} width={64} height={22} />}
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    {
+      plugins.length > 0 && (
+        <section data-section>
+          <div class="heading">
+            <h2>Editor plugins</h2>
+            <p>coc.nvim extensions</p>
+          </div>
+          <div class="grid">
+            {plugins.map((item) => (
+              <a class="card" href={npmUrl(item)} data-kind="plugin" data-text={haystack(item)}>
+                <div class="head">
+                  <h3>{item.name}</h3>
+                  {item.npm?.version && <span class="pill">v{item.npm.version}</span>}
+                </div>
+                {item.description && <p>{item.description}</p>}
+                <div class="foot">
+                  {item.npm && item.npm.downloads > 0 && <span><b>{compact.format(item.npm.downloads)}</b> / mo</span>}
+                  <span>★ {item.stars}</span>
+                  {item.npm && item.npm.daily.length > 1 && <Spark values={item.npm.daily} width={64} height={22} />}
+                </div>
+              </a>
+            ))}
+          </div>
         </section>
       )
     }
@@ -88,15 +161,17 @@ const name = owner.name ?? owner.login;
   </main>
 
   <footer class="wrap">
-    Rebuilt daily from GitHub and npm. Last update {updated}. Tag a repository with the
-    <code>showcase</code> topic and it shows up here.
-    <a href={`https://github.com/${owner.login}/${owner.login.toLowerCase()}.github.io`}>Source</a>.
+    <span>Rebuilt daily from GitHub and npm · last update {updated}</span>
+    <span>
+      Tag a repo with the <code>showcase</code> topic to list it ·
+      <a href={`https://github.com/${owner.login}/${owner.login.toLowerCase()}.github.io`}>source</a>
+    </span>
   </footer>
 
   <script is:inline>
     const search = document.getElementById("search");
     const chips = [...document.querySelectorAll(".chip")];
-    const cards = [...document.querySelectorAll(".card")];
+    const items = [...document.querySelectorAll("[data-kind]")];
     const sections = [...document.querySelectorAll("[data-section]")];
     const empty = document.getElementById("empty");
     let kind = "all";
@@ -104,12 +179,12 @@ const name = owner.name ?? owner.login;
     function apply() {
       const query = search.value.trim().toLowerCase();
       let shown = 0;
-      for (const card of cards) {
-        const match = (kind === "all" || card.dataset.kind === kind) && (!query || card.dataset.text.includes(query));
-        card.hidden = !match;
+      for (const item of items) {
+        const match = (kind === "all" || item.dataset.kind === kind) && (!query || item.dataset.text.includes(query));
+        item.hidden = !match;
         if (match) shown++;
       }
-      for (const section of sections) section.hidden = !section.querySelector(".card:not([hidden])");
+      for (const section of sections) section.hidden = !section.querySelector("[data-kind]:not([hidden])");
       empty.hidden = shown > 0;
     }
 
@@ -122,17 +197,18 @@ const name = owner.name ?? owner.login;
       });
     }
 
-    document.addEventListener("click", async (event) => {
-      const button = event.target.closest?.("[data-copy]");
-      if (!button) return;
-      try {
-        await navigator.clipboard.writeText(button.dataset.copy);
-        const label = button.textContent;
-        button.textContent = "Copied";
-        setTimeout(() => (button.textContent = label), 1200);
-      } catch {
-        /* clipboard unavailable */
-      }
-    });
+    // count the headline number up once, unless the visitor prefers less motion
+    const counter = document.querySelector("[data-count]");
+    if (counter && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const target = Number(counter.dataset.count);
+      const start = performance.now();
+      const format = new Intl.NumberFormat("en");
+      const tick = (now) => {
+        const t = Math.min((now - start) / 1100, 1);
+        counter.textContent = format.format(Math.round(target * (1 - Math.pow(1 - t, 3))));
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
   </script>
 </Base>
