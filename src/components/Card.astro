@@ -1,5 +1,8 @@
 ---
 import { Code } from "astro:components";
+import type { ComponentProps } from "astro/types";
+
+type Lang = ComponentProps<typeof Code>["lang"];
 
 interface Props {
   item: {
@@ -39,7 +42,7 @@ const number = new Intl.NumberFormat("en", { notation: "compact" });
   {
     showUsage && item.usage && (
       <div class="usage">
-        <Code code={item.usage.code} lang={item.usage.lang} themes={{ light: "github-light", dark: "github-dark" }} defaultColor={false} />
+        <Code code={item.usage.code} lang={item.usage.lang as Lang} themes={{ light: "github-light", dark: "github-dark" }} defaultColor={false} />
       </div>
     )
   }
