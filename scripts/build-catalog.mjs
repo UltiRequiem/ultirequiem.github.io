@@ -125,7 +125,6 @@ async function describe(repo, previousByName) {
     url: repo.html_url,
     pushedAt: repo.pushed_at,
     npm,
-    score: (npm?.downloads ?? 0) + repo.stargazers_count * 25,
   };
 }
 
@@ -152,7 +151,8 @@ async function main() {
   );
   // ulti.js.org is about open source JS modules: apps never get listed, whatever their topics say
   const items = found.filter((item) => item.kind !== "app");
-  items.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+  // strictly by downloads, then stars, so the leaderboard reads top to bottom without surprises
+  items.sort((a, b) => (b.npm?.downloads ?? 0) - (a.npm?.downloads ?? 0) || b.stars - a.stars || a.name.localeCompare(b.name));
 
   const dailyTotal = Array.from({ length: DAYS }, (_, i) =>
     items.reduce((sum, item) => sum + (item.npm?.daily.at(i - DAYS) ?? 0), 0),
