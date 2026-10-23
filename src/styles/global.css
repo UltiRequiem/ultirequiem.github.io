@@ -96,6 +96,7 @@ code { font-family: var(--mono); }
 .fact span { font-size: 13px; color: var(--muted); }
 .chart { height: 130px; margin: 0 -4px; }
 .chart .spark { width: 100%; height: 100%; --spark: var(--accent); }
+.note { margin: 0; font-size: 13px; color: var(--muted); }
 .axis { display: flex; justify-content: space-between; font: 12px var(--mono); color: var(--muted); }
 
 /* controls */

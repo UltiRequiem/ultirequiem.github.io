@@ -26,38 +26,39 @@ const npmUrl = (item: Listed) => (item.npm ? `https://www.npmjs.com/package/${it
 const haystack = (item: Listed) => `${item.name} ${item.description} ${item.language ?? ""}`.toLowerCase();
 ---
 
-<Base title={`${name} · open source JavaScript modules`} description={`${totals.packages} open source npm modules by ${name}, ${number.format(totals.downloads)} installs a month. Typed, ESM-only, rebuilt daily from GitHub and npm.`}>
+<Base title={`${name} · open source JavaScript modules`} description={`${totals.packages} open source JavaScript packages by ${name}, installed ${number.format(totals.downloads)} times a month on npm. Typed and ESM-only.`}>
   <div class="wrap">
     <header class="top">
       <a class="brand" href="/"><i></i>{owner.login}</a>
       <nav class="links" aria-label="Profiles">
         <a href={`https://github.com/${owner.login}`}>GitHub</a>
         <a href={`https://www.npmjs.com/~${owner.login.toLowerCase()}`}>npm</a>
-        {owner.blog && <a href={owner.blog.startsWith("http") ? owner.blog : `https://${owner.blog}`}>Blog</a>}
       </nav>
     </header>
 
     <section class="hero">
       <div>
-        <p class="eyebrow">{owner.bio}</p>
         <h1>{name}</h1>
-        <p class="lede">Open source JavaScript modules: small, typed and ESM-only, with the same import in Node.js, Bun and browsers.</p>
+        <p class="lede">
+          I write small JavaScript and TypeScript libraries and publish them on npm. They are open source, fully typed
+          and ESM-only, so the same import works in Node.js, Bun and the browser.
+        </p>
       </div>
 
       <div class="panel">
         <div class="panel-top">
           <div class="big">
             <span data-count={totals.downloads}>{number.format(totals.downloads)}</span>
-            <small>npm installs in the last 30 days</small>
+            <small>npm installs of these packages in the last 30 days</small>
           </div>
           <div class="facts">
-            <div class="fact"><b>{totals.packages}</b><span>packages</span></div>
-            <div class="fact"><b>{number.format(totals.stars)}</b><span>GitHub stars</span></div>
-            <div class="fact"><b>{number.format(owner.followers)}</b><span>followers</span></div>
+            <div class="fact"><b>{totals.packages}</b><span>open source packages</span></div>
+            <div class="fact"><b>{number.format(totals.stars)}</b><span>GitHub stars across them</span></div>
           </div>
         </div>
         <div class="chart"><Spark values={totals.dailyTotal} width={1000} height={130} strokeWidth={2.2} label="Combined daily npm downloads over the last 30 days" /></div>
         <div class="axis"><span>30 days ago</span><span>today</span></div>
+        <p class="note">Only the open source JavaScript packages listed below, not everything I have built.</p>
       </div>
     </section>
   </div>
@@ -161,11 +162,7 @@ const haystack = (item: Listed) => `${item.name} ${item.description} ${item.lang
   </main>
 
   <footer class="wrap">
-    <span>Rebuilt daily from GitHub and npm · last update {updated}</span>
-    <span>
-      Tag a repo with the <code>showcase</code> topic to list it ·
-      <a href={`https://github.com/${owner.login}/${owner.login.toLowerCase()}.github.io`}>source</a>
-    </span>
+    <span>Numbers come from npm and GitHub and refresh every day · last update {updated}</span>
   </footer>
 
   <script is:inline>
