@@ -15,10 +15,6 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
 jobs:
   ci:
     name: CI
@@ -44,6 +40,10 @@ jobs:
     name: Deploy to GitHub Pages
     needs: ci
     if: github.event_name != 'pull_request'
+    # one deploy at a time, never cancelled half way; PR checks are not part of this group
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     environment:
       name: github-pages
