@@ -13,7 +13,7 @@
   },
   "packageManager": "pnpm@12.6.0",
   "dependencies": {
-    "astro": "^7.4.12"
+    "astro": "^7.4.13"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
